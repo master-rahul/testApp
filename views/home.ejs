@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <h1>WELCOME TO HOME PAGE</h1>
+    <a href="/user/signIn"><button>SignIn</button></a>
+    <a href="/user/signUp"><button>SignUp</button></a>
+    <a href="/user/profile"><button>Profile</button></a>
+    <form action="/post/create" method="post">
+        <textarea cols="40" rows="4" placeholder="Type Your Post here ..." name="content" required></textarea>
+        <button type="submit">Post</button>
+    </form>
+    <%if(locals.post){%>
+        <%if(post.length > 0){%>
+            <h2>Posts : </h2>
+            <ul>
+                <%for(_post of post){%>
+                    <li>
+                        <%if(locals.user && locals.user.id == _post.userId.id){%>
+                            <a href="/post/delete/<%=_post.id%>"> [X] </a>
+                        <%}%>
+                        <%=_post.content%> ::::  <small><i>Author : <%=_post.userId.name%>, CreatedAt : <%=_post.createdAt.toDateString()%></i></small>
+                        <%if(locals.user){%>
+                            <form action="/comment/create" method="post">
+                                <input type="text" name="content" placeholder="Enter Your Comment .." required>
+                                <input type="hidden" name="postId" value="<%=_post.id%>">
+                                <button type="submit">Send</button>
+                            </form>
+                        <%}%>
+                        <ul>
+                            <%for(comment of _post.commentIds){%>
+                               <li>
+                                    <%if(locals.user && (locals.user.id==_post.userId.id || locals.user.id == comment.userId.id)){%>
+                                        <a href="/comment/delete/<%=comment.id%>"> [X] </a>
+                                    <%}%>
+                                    <%=comment.content%> :::: <small><i>Author : <%=comment.userId.name%> , CreatedAt : <%=comment.createdAt.toDateString()%></i></small>
+                                </li>
+                            <%}%>
+                        </ul>
+                    </li>
+                <%}%>
+            </ul>
+    <%}}%>
+</html>
